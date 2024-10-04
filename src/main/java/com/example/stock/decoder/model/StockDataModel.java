@@ -3,7 +3,7 @@ package com.example.stock.decoder.model;
 import lombok.Data;
 
 @Data
-public class MonthlyStockModel {
+public class StockDataModel {
     private String date;
     private double open;
     private double high;

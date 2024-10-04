@@ -5,7 +5,7 @@
  */
 package com.example.stock.decoder.service;
 
-import com.example.stock.decoder.model.MonthlyStockModel;
+import com.example.stock.decoder.model.StockDataModel;
 import org.springframework.stereotype.Service;
 import weka.classifiers.Classifier;
 import weka.classifiers.trees.J48;
@@ -29,7 +29,7 @@ public class StockPredictionService {
      * @return A string indicating whether the stock is predicted to go "up" 📈 or "down" 📉.
      * @throws Exception If an error occurs during the dataset creation or classification process.
      */
-    public String predictStockMovement(Map<String, MonthlyStockModel> stockData) throws Exception {
+    public String predictStockMovement(Map<String, StockDataModel> stockData) throws Exception {
         // Create a dataset from the fetched stock data
         Instances dataset = createDataset(stockData);
 
@@ -38,7 +38,7 @@ public class StockPredictionService {
         classifier.buildClassifier(dataset);
 
         // Create an instance for the latest month to predict its movement
-        MonthlyStockModel latestData = getLatestStockData(stockData);
+        StockDataModel latestData = getLatestStockData(stockData);
         DenseInstance instance = new DenseInstance(6);
         instance.setValue(dataset.attribute("open"), latestData.getOpen());
         instance.setValue(dataset.attribute("high"), latestData.getHigh());
@@ -61,7 +61,7 @@ public class StockPredictionService {
      * @param stockData A map containing stock data for each month.
      * @return An Instances object representing the dataset to be used for classification.
      */
-    private Instances createDataset(Map<String, MonthlyStockModel> stockData) {
+    private Instances createDataset(Map<String, StockDataModel> stockData) {
         // Define attributes for Weka
         ArrayList<Attribute> attributes = new ArrayList<>();
         attributes.add(new Attribute("open"));
@@ -81,8 +81,8 @@ public class StockPredictionService {
         dataset.setClassIndex(dataset.numAttributes() - 1);
 
         // Populate the dataset with your stock data
-        for (Map.Entry<String, MonthlyStockModel> entry : stockData.entrySet()) {
-            MonthlyStockModel stock = entry.getValue();
+        for (Map.Entry<String, StockDataModel> entry : stockData.entrySet()) {
+            StockDataModel stock = entry.getValue();
             DenseInstance instance = new DenseInstance(6);
             instance.setValue(dataset.attribute("open"), stock.getOpen());
             instance.setValue(dataset.attribute("high"), stock.getHigh());
@@ -107,7 +107,7 @@ public class StockPredictionService {
      * @param stockData A map containing stock data for each month.
      * @return The latest MonthlyStockData object representing the most recent stock data.
      */
-    private MonthlyStockModel getLatestStockData(Map<String, MonthlyStockModel> stockData) {
+    private StockDataModel getLatestStockData(Map<String, StockDataModel> stockData) {
         // Assuming you want the latest date's stock data
         return stockData.values().stream().findFirst().orElse(null);
     }
